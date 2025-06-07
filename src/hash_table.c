@@ -28,15 +28,6 @@ ht_hash_table* ht_new()
 }
 
 /*
-    CH2
-    Function for deleting ht_items and ht_hash_tables to free memory that was allocated
-*/
-static void ht_del_item(ht_item* i){
-    free(i->key);
-    free(i->value);
-    free(i);
-}
-/*
     Ch3
     Take a string as input and return a number between 0 and m (length of bucket)
     Return an even distribution of bucket indexes for an average set of inputs.  
@@ -53,8 +44,28 @@ static int ht_hash(const char* s, const int a, const int m)
     return (int)hash;
 }
 
+/*
+    CH4
+    Collision handling
+    Open addresssing with double hasing to perform collision resolution
+*/
+static int ht_get_hash(const char* s, const int num_buckets, const int attempt)
+{
+    const int hash_a = ht_hash(s, HT_PRIME_1, num_buckets);
+    const int hash_b = ht_hash(s, HT_PRIME_2, num_buckets);
+    return (hash_a + (attempt * (hash_b + 1))) % num_buckets;
+}
 
 
+/*
+    CH2
+    Function for deleting ht_items and ht_hash_tables to free memory that was allocated
+*/
+static void ht_del_item(ht_item* i){
+    free(i->key);
+    free(i->value);
+    free(i);
+}
 void ht_del_hash_table(ht_hash_table* ht)
 {
     for(int i = 0; i< ht->size; i++)
